@@ -30,5 +30,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTableIfExists("orderdetails");
+  return knex.schema.dropTableIfExists("order_details");
 };

@@ -1,13 +1,19 @@
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
-exports.seed = async function(knex) {
+exports.seed = async function (knex) {
   // Deletes ALL existing entries
-  await knex('table_name').del()
-  await knex('table_name').insert([
-    {id: 1, colName: 'rowValue1'},
-    {id: 2, colName: 'rowValue2'},
-    {id: 3, colName: 'rowValue3'}
+  await knex("users").del();
+  await knex("users").insert([
+    // TODO: password must be cached
+    { id: 1, name: "Denis", email: "denis@gmail.com", password: "password1" },
+    {
+      id: 2,
+      name: "Vladislav",
+      email: "vladislav@gmail.com",
+      password: "password2",
+    },
+    { id: 3, name: "Dor", email: "dor@gmail.com", password: "password3" },
   ]);
 };
