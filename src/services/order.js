@@ -20,7 +20,7 @@ class OrderService {
 
     const { userId, products } = data;
 
-    const order = this.transactor.runInTransaction(async () => {
+    const order = await this.transactor.runInTransaction(async () => {
       let totalPrice = 0;
 
       products.forEach((product) => {
@@ -40,9 +40,10 @@ class OrderService {
       for (const product of products) {
         await this.orderDetailRepository.create(orderId, product);
       }
+
+      return orderId;
     });
 
-    // TODO: nothing returns, we need to return order ID
     return order;
   }
 

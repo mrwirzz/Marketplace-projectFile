@@ -13,13 +13,13 @@ class Transactor {
 
           // Execute the transaction function passed as a parameter
           transactionFn()
-            .then(() => {
+            .then((result) => {
               this.db.run("COMMIT", (err) => {
                 if (err) {
                   this.db.run("ROLLBACK");
                   return reject("Transaction commit failed: " + err.message);
                 }
-                resolve();
+                resolve(result);
               });
             })
             .catch((err) => {
