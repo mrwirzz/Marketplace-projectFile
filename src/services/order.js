@@ -1,8 +1,16 @@
 class OrderService {
-  constructor(logger, orderRepository, orderDetailsRepository) {
+  constructor(
+    logger,
+    orderRepository,
+    orderDetailRepository,
+    productRepository,
+    transactor
+  ) {
     this.orderRepository = orderRepository;
-    this.orderDetailsRepository = orderDetailsRepository;
+    this.orderDetailRepository = orderDetailRepository;
+    this.productRepository = productRepository;
     this.logger = logger;
+    this.transactor = transactor;
   }
 
   async create(data) {
@@ -10,15 +18,30 @@ class OrderService {
     const message = { op: op };
     this.logger.info("", message);
 
-    // TODO: logic
-    // We have:
-    // UserID
-    // Array of productId with quantity
-    // In transaction:
-    // 1. Get product prices, count totalPrice
-    // 2. Create order
-    // 3. Create order_details for every product
-    const order = await this.orderRepository.create(data);
+    const { userId, products } = data;
+
+    const order = this.transactor.runInTransaction(async () => {
+      let totalPrice = 0;
+
+      products.forEach((product) => {
+        const price = this.productRepository.getById(product.productId);
+        if (price) {
+          totalPrice += price * product.quantity;
+          product.price = price;
+        } else {
+          throw new Error(`Price for productId ${item.productId} not found`);
+        }
+      });
+
+      const orderData = { userId: userId, totalPrice: totalPrice };
+
+      const orderId = await this.orderRepository.create(orderData);
+      for (const product of products) {
+        await this.orderDetailRepository.create(orderId, product);
+      }
+    });
+
+    // TODO: nothing returns, we need to return order ID
     return order;
   }
 

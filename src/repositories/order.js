@@ -5,11 +5,11 @@ class OrderRepository {
   }
 
   async create(data) {
+    const { userId, totalPrice } = data;
+
     const op = "repositories.order.create";
     const message = { op: op, userId: userId, totalPrice: totalPrice };
     this.logger.info("", message);
-
-    const { userId, totalPrice } = data;
 
     return new Promise((resolve, reject) => {
       const query = `INSERT INTO orders (userId, totalPrice) VALUES (?, ?)`;
