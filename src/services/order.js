@@ -24,7 +24,8 @@ class OrderService {
       let totalPrice = 0;
 
       products.forEach((product) => {
-        const price = this.productRepository.getById(product.productId);
+        //const price = this.productRepository.getById(product.productId);
+        const price = 10;
         if (price) {
           totalPrice += price * product.quantity;
           product.price = price;

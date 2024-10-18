@@ -11,6 +11,18 @@ function connectDB() {
         throw err;
       } else {
         logger.info("DB connected");
+
+        // Enable foreign key constraints
+        db.run("PRAGMA foreign_keys = ON", (err) => {
+          if (err) {
+            logger.error(
+              "Failed to enable foreign key constraints",
+              err.message
+            );
+          } else {
+            logger.info("Foreign key constraints enabled.");
+          }
+        });
       }
     });
   }
