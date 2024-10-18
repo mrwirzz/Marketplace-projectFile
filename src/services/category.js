@@ -4,12 +4,12 @@ class CategoryService {
     this.logger = logger;
   }
 
-  async create(categoryData) {
+  async create(data) {
     const op = "services.category.create";
     const message = { op: op };
     this.logger.info("", message);
 
-    const category = await this.categoryRepository.create(categoryData);
+    const category = await this.categoryRepository.create(data);
     return category;
   }
 
@@ -31,12 +31,12 @@ class CategoryService {
     return category;
   }
 
-  async update(id, categoryData) {
+  async update(id, data) {
     const op = "services.category.update";
     const message = { op: op, id: id };
     this.logger.info("", message);
 
-    const category = await this.categoryRepository.update(id, categoryData);
+    const category = await this.categoryRepository.update(id, data);
     return category;
   }
 
