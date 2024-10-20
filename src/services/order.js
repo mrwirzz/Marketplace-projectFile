@@ -23,9 +23,10 @@ class OrderService {
     const order = await this.transactor.runInTransaction(async () => {
       let totalPrice = 0;
 
-      // TODO: collapse products by id
+      // collapse products by id
+      const collapsedProducts = collapseProducts(products);
 
-      products.forEach((product) => {
+      collapsedProducts.forEach((product) => {
         //const price = await this.productRepository.getById(product.productId);
         const price = 10;
         if (price) {
@@ -39,7 +40,7 @@ class OrderService {
       const orderData = { userId: userId, totalPrice: totalPrice };
 
       const orderId = await this.orderRepository.create(orderData);
-      for (const product of products) {
+      for (const product of collapsedProducts) {
         await this.orderDetailRepository.create(orderId, product);
       }
 
@@ -74,7 +75,8 @@ class OrderService {
 
     const { products } = data;
 
-    // TODO: collapse products by id
+    // collapse products by id
+    const collapsedProducts = collapseProducts(products);
 
     const order = await this.transactor.runInTransaction(async () => {
       // Find the existing order and order details
@@ -89,7 +91,7 @@ class OrderService {
       let totalPrice = 0;
 
       // Compare request products with existing ones
-      for (const product of products) {
+      for (const product of collapsedProducts) {
         const existingOrderDetail = existingOrderDetails.find(
           (detail) => detail.productId === product.productId
         );
@@ -135,7 +137,7 @@ class OrderService {
 
       existingOrderDetails.forEach((existingOrderDetail) => {
         if (
-          !products.find(
+          !collapsedProducts.find(
             (product) => product.productId === existingOrderDetail.productId
           )
         ) {
@@ -168,6 +170,26 @@ class OrderService {
     const order = await this.orderRepository.delete(id);
     return order;
   }
+}
+
+function collapseProducts(products) {
+  const collapsedProducts = products.reduce((acc, curr) => {
+    // Check if the product ID already exists in the accumulator
+    const existingProduct = acc.find(
+      (item) => item.productId === curr.productId
+    );
+
+    if (existingProduct) {
+      // If it exists, update the quantity
+      existingProduct.quantity += curr.quantity;
+    } else {
+      // If it doesn't exist, add a new product object to the accumulator
+      acc.push({ productId: curr.productId, quantity: curr.quantity });
+    }
+
+    return acc;
+  }, []);
+  return collapsedProducts;
 }
 
 module.exports = OrderService;
