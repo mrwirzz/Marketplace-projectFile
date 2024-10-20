@@ -81,7 +81,8 @@ class OrderRepository {
           return reject(err);
         }
         const orders = groupByOrders(rows);
-        resolve(orders);
+        // TODO: What's the best way to do it to return only one order because we only have one order?
+        resolve(orders[0]);
       });
     });
   }
