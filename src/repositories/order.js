@@ -28,13 +28,28 @@ class OrderRepository {
     this.logger.info("", message);
 
     return new Promise((resolve, reject) => {
-      // TODO: add user name, add order_details
-      const query = `SELECT * FROM orders`;
+      const query = `
+      SELECT
+        orders.id as orderId,
+        orders.totalPrice,
+        orders.userId,
+        user.name as userName, 
+        order_details.productId,
+        products.name as productName,
+        order_details.quantity,
+        order_details.price
+      FROM orders as orders
+      LEFT JOIN users as user ON orders.userId = user.id
+      LEFT JOIN order_details as order_details ON orders.id = order_details.orderId
+      LEFT JOIN products as products ON order_details.productId = products.id
+    `;
+
       this.db.all(query, [], function (err, rows) {
         if (err) {
           return reject(err);
         }
-        resolve(rows);
+        const orders = groupByOrders(rows);
+        resolve(orders);
       });
     });
   }
@@ -45,13 +60,28 @@ class OrderRepository {
     this.logger.info("", message);
 
     return new Promise((resolve, reject) => {
-      // TODO: add user name, add order_details
-      const query = `SELECT * FROM orders WHERE id = ?`;
-      this.db.get(query, [id], function (err, row) {
+      const query = `
+      SELECT
+        orders.id as orderId,
+        orders.totalPrice,
+        orders.userId,
+        user.name as userName, 
+        order_details.productId,
+        products.name as productName,
+        order_details.quantity,
+        order_details.price
+      FROM orders as orders
+      LEFT JOIN users as user ON orders.userId = user.id
+      LEFT JOIN order_details as order_details ON orders.id = order_details.orderId
+      LEFT JOIN products as products ON order_details.productId = products.id
+      WHERE orders.id = ?
+    `;
+      this.db.all(query, [id], function (err, rows) {
         if (err) {
           return reject(err);
         }
-        resolve(row);
+        const orders = groupByOrders(rows);
+        resolve(orders);
       });
     });
   }
@@ -89,6 +119,32 @@ class OrderRepository {
       });
     });
   }
+}
+
+function groupByOrders(rows) {
+  // Group the data by orders
+  const ordersMap = new Map();
+  rows.forEach((row) => {
+    if (!ordersMap.has(row.orderId)) {
+      ordersMap.set(row.orderId, {
+        orderId: row.orderId,
+        totalPrice: row.totalPrice,
+        userName: row.userName,
+        products: [],
+      });
+    }
+    const order = ordersMap.get(row.orderId);
+    order.products.push({
+      productId: row.productId,
+      productName: row.productName,
+      quantity: row.quantity,
+      price: row.price,
+    });
+  });
+
+  // Convert the map to an array of orders
+  const orders = Array.from(ordersMap.values());
+  return orders;
 }
 
 module.exports = OrderRepository;

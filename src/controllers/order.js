@@ -68,7 +68,7 @@ class OrderController {
       }
       res.status(200).json({
         status: "success",
-        data: category,
+        data: order,
       });
     } catch (err) {
       this.logger.error(err);
