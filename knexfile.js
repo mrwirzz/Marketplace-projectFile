@@ -11,6 +11,18 @@ module.exports = {
       filename: process.env.DB_FILENAME,
     },
     useNullAsDefault: true,
+    pool: {
+      afterCreate: (conn, done) => {
+        conn.run("PRAGMA foreign_keys = ON", (err) => {
+          if (err) {
+            console.error("Error enabling foreign keys: ", err);
+          } else {
+            console.log("Foreign keys enabled.");
+          }
+          done(err, conn);
+        });
+      },
+    },
     migrations: {
       tableName: "knex_migrations",
       directory: process.env.MIGRATIONS_FOLDER,
