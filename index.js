@@ -14,5 +14,5 @@ app.use("/api/v1/orders", orderRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
-  logger.info(`Listening on ${port}`);
+  logger.info("Listening", {port: port});
 });
