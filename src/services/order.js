@@ -85,7 +85,6 @@ class OrderService {
         throw new Error(`Order with ID ${id} not found`);
       }
 
-      const { orderId } = order;
       const existingOrderDetails = order.products;
 
       let totalPrice = 0;
@@ -113,7 +112,7 @@ class OrderService {
             existingOrderDetail.price !== price ||
             existingOrderDetail.quantity !== product.quantity
           ) {
-            await this.orderDetailRepository.update(orderId, product);
+            await this.orderDetailRepository.update(id, product);
           }
         } else {
           // If product is new, add it
@@ -128,7 +127,7 @@ class OrderService {
             );
           }
 
-          await this.orderDetailRepository.create(orderId, product);
+          await this.orderDetailRepository.create(id, product);
         }
       }
 

@@ -1,10 +1,6 @@
-# Marketplace-projectFile
-
-backend pet
-
 ## Getting Started
 
-To run the project:
+To run and use the project:
 
 1. **Clone the repository:**
 
@@ -20,30 +16,151 @@ To run the project:
 
 3. **Copy .env file:**
 
-    ```bach
+    ```bash
     cp .env.example .env
     ```
 
     Fill in the required values in `.env`.
 
 4. **Run Migrations:**
+    The knex library is used for migrations
 
-    ```bach
+    Run all migrations
+    ```bash
     npx knex migrate:latest
     ```
 
-    Rollback Last Migration:
-     ```bach
+    Rollback last migration:
+     ```bash
     npx knex migrate:rollback
     ```
 
-    Rollback All Migrations:
-     ```bach
+    Rollback all migrations:
+     ```bash
     npx knex migrate:rollback --all
     ```  
 
 5. **Run Seeds:**
+    The knex library is used to fill the database with data
 
-    ```bach
+    ```bash
     npx knex seed:run
     ```
+
+6. **Run tests:**
+
+    The jest library is used for tests
+    ```bababashshch
+    npx test
+    ```
+
+    To find out your test coverage
+    ```bash
+    npx run coverage
+    ```
+
+## Contract
+
+### Categories
+
+#### Create
+*POST /api/v1/categories/*
+
+Request
+```json
+{
+    "name": string
+}
+```
+
+#### Get all
+*GET /api/v1/categories/*
+
+Request
+```json
+{}
+```
+
+#### Get by ID
+*GET /api/v1/categories/:id*
+
+Request
+```json
+{}
+```
+
+#### Update
+*PUT /api/v1/categories/:id*
+
+Request
+```json
+{
+    "name": string
+}
+```
+
+#### Delete
+*DELETE /api/v1/categories/:id*
+
+Request
+```json
+{}
+```
+
+### Orders
+
+#### Create
+*POST /api/v1/orders/*
+
+Request
+```json
+{
+  "userId": int,
+  "products": [
+    {
+      "productId": int,
+      "quantity": int
+    }
+  ]
+}
+```
+
+#### Get all
+*GET /api/v1/orders/*
+
+Request
+```json
+{}
+```
+
+#### Get by ID
+*GET /api/v1/orders/:id*
+
+Request
+```json
+{}
+```
+
+#### Update
+*PUT /api/v1/orders/:id*
+
+Request
+```json
+{
+  "products": [
+    {
+      "productId": int,
+      "quantity": int
+    }
+  ]
+}
+```
+
+#### Delete
+*DELETE /api/v1/orders/:id*
+
+Request
+```json
+{}
+```
+

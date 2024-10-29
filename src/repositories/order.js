@@ -33,13 +33,13 @@ class OrderRepository {
         orders.id as orderId,
         orders.totalPrice,
         orders.userId,
-        user.name as userName, 
+        users.name as userName, 
         order_details.productId,
         products.name as productName,
         order_details.quantity,
         order_details.price
       FROM orders as orders
-      LEFT JOIN users as user ON orders.userId = user.id
+      LEFT JOIN users as users ON orders.userId = users.id
       LEFT JOIN order_details as order_details ON orders.id = order_details.orderId
       LEFT JOIN products as products ON order_details.productId = products.id
     `;
@@ -65,13 +65,13 @@ class OrderRepository {
         orders.id as orderId,
         orders.totalPrice,
         orders.userId,
-        user.name as userName, 
+        users.name as userName, 
         order_details.productId,
         products.name as productName,
         order_details.quantity,
         order_details.price
       FROM orders as orders
-      LEFT JOIN users as user ON orders.userId = user.id
+      LEFT JOIN users as users ON orders.userId = users.id
       LEFT JOIN order_details as order_details ON orders.id = order_details.orderId
       LEFT JOIN products as products ON order_details.productId = products.id
       WHERE orders.id = ?
